@@ -59,7 +59,7 @@ common_includes := \
 #
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := libsepol
+LOCAL_MODULE := libsupol
 LOCAL_MODULE_TAGS := optional
 LOCAL_COPY_HEADERS_TO := sepol
 LOCAL_COPY_HEADERS := include/sepol/handle.h include/sepol/policydb.h
