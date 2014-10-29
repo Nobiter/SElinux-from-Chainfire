@@ -41,51 +41,18 @@ common_src_files := \
 	src/util.c \
 	src/write.c
 
-cil_src_files := \
-	cil/src/android.c \
-	cil/src/cil_binary.c \
-	cil/src/cil_build_ast.c \
-	cil/src/cil.c \
-	cil/src/cil_copy_ast.c \
-	cil/src/cil_find.c \
-	cil/src/cil_fqn.c \
-	cil/src/cil_lexer.l \
-	cil/src/cil_list.c \
-	cil/src/cil_log.c \
-	cil/src/cil_mem.c \
-	cil/src/cil_parser.c \
-	cil/src/cil_policy.c \
-	cil/src/cil_post.c \
-	cil/src/cil_reset_ast.c \
-	cil/src/cil_resolve_ast.c \
-	cil/src/cil_stack.c \
-	cil/src/cil_strpool.c \
-	cil/src/cil_symtab.c \
-	cil/src/cil_tree.c \
-	cil/src/cil_verify.c \
-	cil/src/cil_write_ast.c
-
 common_cflags := \
 	-D_GNU_SOURCE \
-	-Wall -W -Wundef \
+	-Wall -W \
 	-Wshadow -Wmissing-noreturn \
-	-Wmissing-format-attribute
+	-Wmissing-format-attribute \
+	-Wno-unused-variable -Wno-unused-but-set-variable -Wno-maybe-uninitialized
+
+common_cflags += -fno-builtin
 
 common_includes := \
 	$(LOCAL_PATH)/include/ \
-	$(LOCAL_PATH)/src/ \
-	$(LOCAL_PATH)/cil/include/ \
-	$(LOCAL_PATH)/cil/src/ \
-
-common_export_includes := \
-	$(LOCAL_PATH)/include \
-	$(LOCAL_PATH)/cil/include
-
-##
-# "-x c" forces the lex/yacc files to be compiled as c the build system
-# otherwise forces them to be c++. Need to also add an explicit -std because the
-# build system will soon default C++ to -std=c++11.
-yacc_flags := -x c -std=gnu89
+	$(LOCAL_PATH)/src/
 
 ##
 # libsepol.so
@@ -94,51 +61,11 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := libsepol
 LOCAL_MODULE_TAGS := optional
-LOCAL_C_INCLUDES := $(common_includes) 
-LOCAL_CFLAGS := $(common_cflags)
-LOCAL_CPPFLAGS := $(yacc_flags)
-LOCAL_SRC_FILES := $(common_src_files) $(cil_src_files)
-LOCAL_EXPORT_C_INCLUDE_DIRS := $(common_export_includes)
-
-include $(BUILD_HOST_SHARED_LIBRARY)
-
-##
-# libsepol.a
-#
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := libsepol
-LOCAL_MODULE_TAGS := optional
-LOCAL_C_INCLUDES := $(common_includes) 
-LOCAL_CFLAGS := $(common_cflags)
-LOCAL_CPPFLAGS := $(yacc_flags)
-LOCAL_SRC_FILES := $(common_src_files) $(cil_src_files)
-LOCAL_EXPORT_C_INCLUDE_DIRS := $(common_export_includes)
-
-include $(BUILD_HOST_STATIC_LIBRARY)
-
-##
-# chkcon
-#
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := chkcon
-LOCAL_MODULE_TAGS := optional
-LOCAL_C_INCLUDES := $(common_includes) 
-LOCAL_CFLAGS := $(common_cflags)
-LOCAL_SRC_FILES := utils/chkcon.c
-LOCAL_SHARED_LIBRARIES := libsepol
-
-include $(BUILD_HOST_EXECUTABLE)
-
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := libsepol
-LOCAL_MODULE_TAGES := optional
+LOCAL_COPY_HEADERS_TO := sepol
+LOCAL_COPY_HEADERS := include/sepol/handle.h include/sepol/policydb.h
 LOCAL_C_INCLUDES := $(common_includes)
 LOCAL_CFLAGS := $(common_cflags)
-LOCAL_CPPFLAGS := $(yacc_flags)
-LOCAL_SRC_FILES := $(common_src_files) $(cil_src_files)
-LOCAL_EXPORT_C_INCLUDE_DIRS := $(common_export_includes)
+LOCAL_SRC_FILES := $(common_src_files)
+LOCAL_MODULE_CLASS := SHARED_LIBRARIES
 
-include $(BUILD_STATIC_LIBRARY)
+include $(BUILD_SHARED_LIBRARY)

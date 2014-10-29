@@ -1,2 +1,4 @@
 utils/chkcon
 libsepol.map
+obj/
+libs/
