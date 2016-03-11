@@ -3,6 +3,7 @@ LOCAL_PATH:= $(call my-dir)
 common_src_files := \
 	src/assertion.c \
 	src/avrule_block.c \
+	src/android_m_compat.c \
 	src/avtab.c \
 	src/boolean_record.c \
 	src/booleans.c \
